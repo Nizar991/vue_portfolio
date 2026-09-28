@@ -1,0 +1,85 @@
+/* =====================================================
+   SHARED THEME TOKENS — "Neural Constellation" dark theme
+   Import this file first in any component stylesheet.
+===================================================== */
+/* Your original signature font (file lives in public/fonts) */
+@font-face {
+  font-family: 'KoratakiBook';
+  src: url('/fonts/korataki_book.otf') format('opentype');
+  font-display: swap;
+}
+
+:root {
+  /* --- Core palette --- */
+  --bg-void: #06040e;
+  --bg-deep: #0d0820;
+  --bg-deep-2: #140a2e;
+  --bg-card: rgba(255, 255, 255, 0.035);
+  --bg-card-hover: rgba(255, 255, 255, 0.06);
+
+  --accent-violet: #8b5cf6;
+  --accent-violet-soft: rgba(139, 92, 246, 0.35);
+  --accent-blue: #4f9dff;
+  --accent-blue-soft: rgba(79, 157, 255, 0.35);
+  --accent-pink: #d16bff;
+  --accent-cyan: #45e8ff;
+
+  --gradient-primary: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-violet) 50%, var(--accent-pink) 100%);
+  --gradient-primary-diag: linear-gradient(120deg, #4f9dff, #8b5cf6 45%, #d16bff 90%);
+  --gradient-radial-glow: radial-gradient(circle at center, rgba(139,92,246,0.5), transparent 70%);
+
+  --text-primary: #f3f0ff;
+  --text-secondary: #c8c0e8;
+  --text-muted: #8d84b3;
+
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(139, 92, 246, 0.4);
+
+  --shadow-card: 0 8px 32px rgba(4, 2, 14, 0.55);
+  --shadow-glow-violet: 0 0 40px rgba(139, 92, 246, 0.25);
+  --shadow-glow-blue: 0 0 40px rgba(79, 157, 255, 0.2);
+
+  --font-display: 'Sora', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--accent-violet);
+  color: #fff;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg-void);
+}
+
+body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+/* Slim glowing scrollbar to match theme */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: 10px;
+  border: 2px solid var(--bg-void);
+}

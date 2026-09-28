@@ -1,0 +1,208 @@
+// ===================================================
+// Shared project data — edit once, updates everywhere.
+// Add a real "link" (GitHub repo or live demo) whenever
+// you have one; leave it as '' to hide the button.
+// ===================================================
+
+export const projects = [
+  // ---------------- AI / MACHINE LEARNING ----------------
+  {
+    id: "hate-detection",
+    category: "AI / Machine Learning",
+    icon: "fa-solid fa-brain",
+    title: "Multi-Category Hate Detection",
+    tag: "Dissertation Project",
+    tagline: "Transformer models trained to catch hate speech across multiple categories at once.",
+    summary: "A transformer-based classification system paired with a contextual bandit and adversarial testing, built to detect and categorise hate speech.",
+    description: "For my MSc dissertation, I built a multi-category hate speech detection system on top of transformer language models. A contextual bandit component was layered on to help the system adapt its decisions over time, and the whole pipeline was stress-tested against adversarial examples to check how it held up against inputs deliberately designed to slip past the classifier.",
+    highlights: [
+      "Fine-tuned transformer models for multi-label hate-speech classification",
+      "Contextual bandit layer for adaptive decision-making",
+      "Adversarial testing to probe robustness and edge cases",
+      "End-to-end pipeline from raw text to categorised output",
+    ],
+    stack: ["Python", "Transformer Models", "Hugging Face", "Scikit-learn", "NumPy"],
+    link: "",
+  },
+  {
+    id: "library-robot",
+    category: "AI / Machine Learning",
+    icon: "fa-solid fa-robot",
+    title: "Interactive Library Robot",
+    tag: "Thesis Project",
+    tagline: "A physical robot that helps you find books — built from hardware up to conversation.",
+    summary: "Designed and built end-to-end, from hardware through to software, with a semantic search system and ChatGPT API integration for natural conversation.",
+    description: "This thesis project took a library robot from bare hardware to a working, talking assistant. I handled the full stack of the build: the physical/hardware layer, a semantic search system so the robot could understand what a visitor was actually looking for rather than matching exact keywords, and an integration with the ChatGPT API so it could hold a natural conversation while helping people locate books.",
+    highlights: [
+      "Hardware-to-software build for a physical interactive robot",
+      "Semantic search for intent-aware book lookup",
+      "ChatGPT API integration for natural conversation",
+      "Published across HCII 2024, CR 2025, and HRI '25",
+    ],
+    stack: ["Python", "OpenAI APIs", "Semantic Search", "Robotics", "REST APIs"],
+    link: "",
+  },
+  {
+    id: "hate-intensity",
+    category: "AI / Machine Learning",
+    icon: "fa-solid fa-fire",
+    title: "Hate-Intensity Detection",
+    tag: "Research Build",
+    tagline: "Measuring how severe hateful content is, not just whether it's present.",
+    summary: "Built using Topic Modelling (LDA) combined with Fuzzy Decision Systems to score the intensity of hateful content.",
+    description: "Rather than a binary hate/not-hate classifier, this project scores the intensity of hateful content. Latent Dirichlet Allocation (LDA) topic modelling surfaces the underlying themes in a piece of text, and a fuzzy decision system converts that into a graded intensity score — handling the fact that 'how hateful' something is rarely fits neatly into hard categories.",
+    highlights: [
+      "Topic Modelling (LDA) for theme extraction",
+      "Fuzzy Decision Systems for graded intensity scoring",
+      "Designed to complement binary hate-detection classifiers",
+    ],
+    stack: ["Python", "LDA", "Fuzzy Logic", "NumPy"],
+    link: "",
+  },
+  {
+    id: "car-price",
+    category: "AI / Machine Learning",
+    icon: "fa-solid fa-chart-line",
+    title: "UK Used Car Market Analyzer",
+    tag: "ML Project",
+    tagline: "Predicting used car prices across the UK market with measurable accuracy.",
+    summary: "ML models for price prediction and comparison, evaluated using MAPE-derived accuracy.",
+    description: "This project trained and compared multiple machine learning models against UK used-car market data to predict resale prices. Accuracy was tracked using MAPE (Mean Absolute Percentage Error), which made it possible to directly compare how each model performed against the others rather than relying on a single black-box result.",
+    highlights: [
+      "Multiple ML models trained and benchmarked against each other",
+      "MAPE-based accuracy comparison across models",
+      "Real-world, noisy market data as the training source",
+    ],
+    stack: ["Python", "Scikit-learn", "Pandas/NumPy", "Data Analysis"],
+    link: "",
+  },
+  {
+    id: "product-categorizer",
+    category: "AI / Machine Learning",
+    icon: "fa-solid fa-boxes-stacked",
+    title: "E2E Product Categorizer",
+    tag: "ML Project",
+    tagline: "A trained model that sorts products into the right category, start to finish.",
+    summary: "End-to-end product categorisation using a trained machine learning model.",
+    description: "A complete end-to-end pipeline that takes raw product data in and returns a predicted category out — covering data preparation, model training, and inference in one system, built with production-style reliability in mind rather than as a one-off notebook experiment.",
+    highlights: [
+      "Full end-to-end pipeline: ingestion → training → inference",
+      "Trained classification model for automatic categorisation",
+    ],
+    stack: ["Python", "Machine Learning", "Data Pipelines"],
+    link: "",
+  },
+
+  // ---------------- FULL STACK & WEB DEVELOPMENT ----------------
+  {
+    id: "lc-management",
+    category: "Full Stack Development",
+    icon: "fa-brands fa-java",
+    title: "LC Management System",
+    tag: "Banking System",
+    tagline: "Letter-of-credit management, built for the realities of banking workflows.",
+    summary: "A Java application for managing letters of credit (LC) for banking use cases.",
+    description: "Letters of credit involve strict, multi-step approval and document workflows in banking. This Java application models that process digitally — tracking each LC through its lifecycle with the kind of validation and structure banking workflows demand.",
+    highlights: [
+      "Java-based system modelling real banking LC workflows",
+      "Structured data handling for financial-document processes",
+    ],
+    stack: ["Java", "OOP", "System Design"],
+    link: "",
+  },
+  {
+    id: "graph-relationship",
+    category: "Full Stack Development",
+    icon: "fa-solid fa-sitemap",
+    title: "Graph Relationship Management System",
+    tag: "Full Stack",
+    tagline: "A Laravel backend powered by a Neo4j graph database for relationship-heavy data.",
+    summary: "Laravel backend with a Neo4j graph database for managing complex, connected relationships.",
+    description: "Some data is fundamentally about relationships, not rows and tables. This system pairs a Laravel backend with Neo4j, a graph database, so relationship-heavy data — networks, hierarchies, connections between entities — can be queried and managed the way it's naturally structured, instead of forcing it into relational tables.",
+    highlights: [
+      "Laravel backend architecture",
+      "Neo4j graph database for relationship-first data modelling",
+      "API layer for querying connected data",
+    ],
+    stack: ["Laravel", "PHP", "Neo4j", "Graph Database", "REST APIs"],
+    link: "",
+  },
+  {
+    id: "personal-portfolio",
+    category: "Full Stack Development",
+    icon: "fa-brands fa-vuejs",
+    title: "Personal Portfolio",
+    tag: "This Site",
+    tagline: "The very site you're looking at right now — built from scratch with Vue.js.",
+    summary: "This portfolio itself, built with Vue.js, including its animation system, routing and design.",
+    description: "Yes — this project is this website. Built with Vue.js end to end: component architecture, client-side routing for case-study pages like this one, a custom canvas-based particle system, scroll-driven reveal animations, and a full dark, glassmorphic design system.",
+    highlights: [
+      "Component-based Vue.js architecture",
+      "Client-side routing for individual project case studies",
+      "Custom canvas particle/constellation background",
+      "Hand-built glassmorphic dark design system",
+    ],
+    stack: ["Vue.js", "JavaScript", "CSS", "Vue Router"],
+    link: "",
+  },
+  {
+    id: "telemedicine",
+    category: "Full Stack Development",
+    icon: "fa-solid fa-stethoscope",
+    title: "Accessible Telemedicine Application",
+    tag: "Web Application",
+    tagline: "Connecting doctors and patients online, with accessibility built in from the start.",
+    summary: "A web application connecting doctors and patients, built with PHP.",
+    description: "A telemedicine platform built to make remote healthcare consultations more accessible — connecting doctors and patients through a PHP-driven web application, with accessibility considered as a core requirement rather than an afterthought.",
+    highlights: [
+      "PHP-based doctor-patient consultation platform",
+      "Accessibility-focused interface decisions",
+    ],
+    stack: ["PHP", "MySQL", "HTML/CSS", "JavaScript"],
+    link: "",
+  },
+  {
+    id: "staff-platform",
+    category: "Full Stack Development",
+    icon: "fa-brands fa-node-js",
+    title: "Staff Platform",
+    tag: "Production Tool",
+    tagline: "A CRUD-based MERN application built for real day-to-day staff use.",
+    summary: "A CRUD-based MERN stack storage application built for staff use in production.",
+    description: "A full CRUD (Create, Read, Update, Delete) application built on the MERN stack (MongoDB, Express, React, Node.js) for internal staff to manage and store operational data — designed with production use in mind, not just as a demo.",
+    highlights: [
+      "Full MERN stack implementation",
+      "CRUD operations for staff data management",
+      "Built for real production/staff use, not just demonstration",
+    ],
+    stack: ["MongoDB", "Express", "React", "Node.js"],
+    link: "",
+  },
+  {
+    id: "weather-app",
+    category: "Full Stack Development",
+    icon: "fa-solid fa-cloud-sun",
+    title: "Weather Application",
+    tag: "Full Stack",
+    tagline: "Collecting and updating weather reports through a full PHP stack.",
+    summary: "A full-stack application built with PHP for collecting and updating weather reports.",
+    description: "A full-stack weather reporting application, built entirely with PHP, that handles collecting weather data and keeping reports up to date — covering both the data-handling backend and the front-facing interface.",
+    highlights: [
+      "Full PHP stack from data collection to display",
+      "Report update/refresh workflow",
+    ],
+    stack: ["PHP", "MySQL", "HTML/CSS", "JavaScript"],
+    link: "",
+  },
+];
+
+export function getProjectById(id) {
+  return projects.find((p) => p.id === id) || null;
+}
+
+export const otherSites = [
+  { caption: "Google Site Development", icon: "fa-brands fa-google", link: "" },
+  { caption: "Wix Site Development", icon: "fa-solid fa-globe", link: "" },
+  { caption: "Shopify Store Development", icon: "fa-brands fa-shopify", link: "" },
+  { caption: "WordPress Site Development", icon: "fa-brands fa-wordpress-simple", link: "" },
+];

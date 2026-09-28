@@ -1,430 +1,427 @@
 <template>
-  <button v-show="isVisible" @click="scrollToTop" class="scroll-to-top">
-    <i class="fas fa-arrow-up"></i>
-  </button>
+  <div id="portfolio-root">
 
-  <v-container fluid id="video-container">
+    <!-- ===== Cursor glow (desktop only, purely decorative) ===== -->
+    <div id="cursor-glow" ref="cursorGlow"></div>
 
-      <video id="bg_video" autoplay loop muted playsinline>
-        <source src="/videos/portfolio_bg.mp4" type="video/mp4" />
-      </video>
+    <!-- ===== Constellation background canvas ===== -->
+    <canvas id="constellation-canvas" ref="constellationCanvas"></canvas>
 
-      <v-app-bar id="navbar" app fixed elevation="0">
-        <v-btn
-          v-for="(item, index) in navItems"
-          :key="index"
-          :id="'nav-item-' + index"
-          variant="text"
-          @click="handleNavClick(item)"
-        >
-          {{ item.label }}
-        </v-btn>
-      </v-app-bar>
+    <button v-show="isVisible" @click="scrollToTop" class="scroll-to-top" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
 
-      <v-sheet id="video_overlay"></v-sheet>
-
-    <v-row id="content-row">
-
-      <v-col cols="12" md="6" id="left-section" :class="{'fade-out-left': isScrolled, 'fade-in-from-left': !isScrolled && scrolledOnce}">
-        <div id="name">Nizar Ahmed</div>
-        <div id="title">Full Stack Development | AI Engineering | Mobile App Development | Media Management</div>
-        <div id="social-icons">
-          <v-icon id="gmail-icon" data-aos="zoom-in" data-aos-delay="100">
-            <a href="mailto:nizarahmed991ps@gmail.com">
-              <i class="fa-brands fa-google"></i>
-            </a>
-          </v-icon>
-          <v-icon id="linkedin-icon" @click="openLink('https://www.linkedin.com/in/nizar-ahmed/')" data-aos="zoom-in" data-aos-delay="200">
-            <i class="fa-brands fa-linkedin"></i>
-          </v-icon>
-          <v-icon id="github-icon" @click="openLink('https://github.com/Nizar991')" data-aos="zoom-in" data-aos-delay="300">
-            <i class="fa-brands fa-github"></i>
-          </v-icon>
-          <v-icon id="cv-icon" @click="openLink('/cv/CV_NizarAhmed.pdf')" data-aos="zoom-in" data-aos-delay="400">
-            <i class="fa-solid fa-file-pdf"></i>
-          </v-icon>
+    <!-- ===== NAVBAR with sliding glow indicator ===== -->
+    <nav id="navbar" ref="navbar">
+      <div class="nav-inner">
+        <div class="nav-logo" @click="scrollToTop">Nizar Ahmed</div>
+        <div class="nav-items" ref="navItems">
+          <button
+            v-for="(item, index) in navItems"
+            :key="index"
+            :ref="el => setNavRef(el, index)"
+            class="nav-item"
+            :class="{ 'nav-item-active': activeSection === item.target }"
+            @click="handleNavClick(item)"
+          >
+            {{ item.label }}
+          </button>
+          <span class="nav-indicator" ref="navIndicator"></span>
         </div>
-      </v-col>
-
-      <v-col cols="12" md="6" id="right-section" data-aos="fade-up" data-aos-duration="1000">
-        <img
-        id="profile-pic"
-        src="/images/Profile_Pic.png"
-        alt="Profile Picture"
-        :class="{'fade-out-up': isScrolled, 'fade-in-from-top': !isScrolled && scrolledOnce}"/>
-      </v-col>
-    </v-row>
-
-  </v-container>
-
-  <!-- ===================== ABOUT ME ===================== -->
-  <v-container fluid id="second-section-container" class="white-section">
-    <div class="blob blob-about-1"></div>
-    <div class="blob blob-about-2"></div>
-    <v-col cols="12" md="10">
-      <v-sheet id="about-me-box"
-      :class="{'grow': isScrolled, 'shrink': !isScrolled}">
-        <h2 id="about-me-title">ABOUT ME</h2>
-        <p id="about-me-text">
-          Full Stack Development and Machine Learning experiences using industrially used tools to implement in self-taught projects. Passionate about Engineering. Developed applications maintaining standards apart from academic projects. Looking forward to corporate experiences. Strongly confident about task accomplishments.
-        </p>
-      </v-sheet>
-    </v-col>
-  </v-container>
-
-  <!-- ===================== SKILLS ===================== -->
-  <v-container fluid id="skills-container" class="white-section">
-    <div class="blob blob-skills-1"></div>
-    <h2 id="skill-title">SKILLS</h2>
-
-    <v-row
-      id="skills-row"
-      :class="{ 'grow': isScrolled, 'shrink': !isScrolled }"
-    >
-      <ul id="skill-html">
-        <li>• Workflow Automation with n8n</li>
-        <li>• Machine Learning Models</li>
-        <li>• API Integration Development</li>
-        <li>• System Testing &amp; Debugging</li>
-      </ul>
-
-      <ul id="skill-node">
-        <li>• SQL &amp; Data Querying</li>
-        <li>• Database Design, Migration &amp; Optimization</li>
-        <li>• Frontend &amp; Backend Development with Error Handling</li>
-        <li>• Data Pipelines &amp; Processing</li>
-      </ul>
-    </v-row>
-  </v-container>
-
-  <!-- ===================== PROGRAMMING LANGUAGES ===================== -->
-  <v-container fluid id="proglang-container" class="white-section">
-    <div class="blob blob-proglang-1"></div>
-    <h2 class="section-title">PROGRAMMING LANGUAGES</h2>
-    <div id="proglang-box" class="pill-row" :class="{ 'grow': isScrolled, 'shrink': !isScrolled }">
-      <span class="pill" v-for="(lang, index) in progLanguages" :key="'lang-' + index">
-        {{ lang }}
-      </span>
-    </div>
-  </v-container>
-
-  <!-- ===================== PROJECTS / TECH STACK TOGGLE ===================== -->
-  <v-container id="projects-section" class="project-stack-container white-section">
-    <div class="blob blob-toggle-1"></div>
-    <div class="button-container">
-      <div
-        class="toggle-button"
-        :class="{ active: selectedSection === 'projects' }"
-        @click="selectedSection = 'projects'"
-      >
-        Projects
       </div>
-      <div
-        class="toggle-button"
-        :class="{ active: selectedSection === 'techStack' }"
-        @click="selectedSection = 'techStack'"
-      >
-        Tech Stack
-      </div>
-    </div>
+    </nav>
 
-    <!-- Content Sections -->
-    <div v-if="selectedSection === 'projects'" class="content-box projects-box">
-      <h2 class="projects-web-title">PROJECTS</h2>
-      <swiper
-        :slides-per-view="3"
-        :space-between="30"
-        :centered-slides="true"
-        :loop="true"
-        effect="coverflow"
-        :coverflow-effect="{
-          rotate: 0,
-          stretch: 0,
-          depth: 100,
-          modifier: 2,
-          slideShadows: false
-        }"
-        :autoplay="{ delay: 3000, disableOnInteraction: false }"
-        class="mySwiper"
-        @swiper="onSwiper"
-      >
-        <swiper-slide
-          v-for="(project, index) in webProjects"
-          :key="'web-slide-' + index"
-          @click="handleSlideClick(index)"
-        >
-        <div class="project-item">
-            <div class="project-visual">
-              <i :class="project.icon"></i>
-            </div>
-            <div v-if="isActiveSlide(index)" class="project-caption">
-              {{ project.caption }}
-            </div>
+    <!-- ===== HERO ===== -->
+    <section id="hero-section">
+      <div class="hero-glow hero-glow-1"></div>
+      <div class="hero-glow hero-glow-2"></div>
+
+      <div class="hero-content">
+        <div class="hero-left">
+          <h1 id="hero-name" :class="{ 'reveal-in': heroLoaded }">
+            <span v-for="(letter, i) in nameLetters" :key="i" class="letter" :style="{ transitionDelay: (i * 0.045) + 's' }">{{ letter === ' ' ? '\u00A0' : letter }}</span>
+          </h1>
+          <p id="hero-title" :class="{ 'reveal-in': heroLoaded }">{{ titleText }}</p>
+          <p class="hero-blurb" :class="{ 'reveal-in': heroLoaded }">
+            {{ personalStatement }}
+          </p>
+
+
+          <div id="social-icons" :class="{ 'reveal-in': heroLoaded }">
+            <a class="social-icon" href="mailto:nizarahmed991ps@gmail.com" aria-label="Email" data-tip="Email">
+              <i class="fa-solid fa-envelope"></i>
+            </a>
+            <a class="social-icon" href="https://www.linkedin.com/in/nizar-ahmed/" target="_blank" rel="noopener" aria-label="LinkedIn" data-tip="LinkedIn">
+              <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+            <a class="social-icon" href="https://github.com/Nizar991" target="_blank" rel="noopener" aria-label="GitHub" data-tip="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a class="social-icon" href="/cv/CV_NizarAhmed.pdf" target="_blank" rel="noopener" aria-label="Download CV" data-tip="Resume">
+              <i class="fa-solid fa-file-arrow-down"></i>
+            </a>
           </div>
-        </swiper-slide>
-      </swiper>
+        </div>
 
-      <h2 class="projects-other-title">OTHER SITES</h2>
-      <div class="projects-web-grid">
-        <div
-          class="project-web-item"
-          v-for="(project, index) in otherProjects"
-          :key="'other-' + index"
-        >
-          <div class="image-wrapper">
-            <a v-if="project.link" :href="project.link" target="_blank">
-              <div class="project-web-visual">
-                <i :class="project.icon"></i>
+        <div class="hero-right" :class="{ 'reveal-in': heroLoaded }">
+          <div class="profile-ring-wrap" @mousemove="handleProfileTilt" @mouseleave="resetProfileTilt" ref="profileWrap">
+            <div class="profile-ring profile-ring-outer"></div>
+            <div class="profile-ring profile-ring-inner"></div>
+            <div class="profile-orbit-dot dot-1"></div>
+            <div class="profile-orbit-dot dot-2"></div>
+            <div class="profile-orbit-dot dot-3"></div>
+            <img
+              id="profile-pic"
+              src="/images/Profile_Pic.png"
+              alt="Nizar Ahmed"
+              ref="profilePic"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-hint" @click="scrollToId('about-section')">
+        <span>Scroll</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="about-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <div class="glass-panel about-panel">
+          <span class="panel-index">01</span>
+          <h2 class="section-title">About Me</h2>
+          <p class="about-text">{{ personalStatement }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SKILLS ===== -->
+    <section id="skills-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <h2 class="section-title centered">Skills</h2>
+        <div class="skills-grid">
+          <div class="skill-card" v-for="(group, gi) in skillGroups" :key="'skill-group-' + gi" @mousemove="handleCardTilt" @mouseleave="resetCardTilt">
+            <div class="skill-card-glow"></div>
+            <i :class="group.icon" class="skill-card-icon"></i>
+            <h3>{{ group.title }}</h3>
+            <ul>
+              <li v-for="(item, i) in group.items" :key="i"><span class="dot"></span>{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROGRAMMING LANGUAGES ===== -->
+    <section id="languages-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <h2 class="section-title centered">Programming Languages</h2>
+        <div class="pill-row">
+          <span class="pill" v-for="(lang, index) in progLanguages" :key="'lang-' + index" :style="{ transitionDelay: (index * 0.06) + 's' }">
+            {{ lang }}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROJECTS / TECH STACK ===== -->
+    <section id="projects-section" class="reveal-section" data-reveal>
+      <div class="section-inner wide">
+        <div class="button-container">
+          <div class="toggle-button" :class="{ active: selectedSection === 'projects' }" @click="selectedSection = 'projects'">
+            Projects
+          </div>
+          <div class="toggle-button" :class="{ active: selectedSection === 'techStack' }" @click="selectedSection = 'techStack'">
+            Tech Stack
+          </div>
+        </div>
+
+        <transition name="fade-swap" mode="out-in">
+          <div v-if="selectedSection === 'projects'" key="projects" class="content-box">
+            <h3 class="subsection-title">Featured Projects</h3>
+            <p class="subsection-hint">Pick a category, click a card to flip it, then open the full case study.</p>
+
+            <div class="category-tabs">
+              <button
+                v-for="cat in projectCategories"
+                :key="cat"
+                class="category-tab"
+                :class="{ active: projectCategory === cat }"
+                @click="setProjectCategory(cat)"
+              >
+                {{ cat }}
+                <span class="category-count">{{ projectsInCategory(cat).length }}</span>
+              </button>
+            </div>
+
+            <div class="projects-grid" :key="projectCategory">
+              <div
+                v-for="(project, pIndex) in visibleProjects"
+                :key="project.id"
+                class="flip-card"
+                :class="{ flipped: flippedCard === project.id }"
+                :style="{ '--i': pIndex }"
+                @click="toggleFlip(project.id)"
+              >
+                <div class="flip-card-inner">
+                  <div class="flip-card-face flip-card-front">
+                    <div class="project-visual"><i :class="project.icon"></i></div>
+                    <span class="project-category-tag">{{ project.tag }}</span>
+                    <h4>{{ project.title }}</h4>
+                    <p class="project-tagline">{{ project.tagline }}</p>
+                    <span class="flip-hint"><i class="fa-solid fa-arrow-rotate-right"></i> Flip</span>
+                  </div>
+                  <div class="flip-card-face flip-card-back">
+                    <span class="project-tag-badge">{{ project.tag }}</span>
+                    <p class="project-summary">{{ project.summary }}</p>
+                    <div class="project-stack-tags">
+                      <span v-for="(t, i) in project.stack.slice(0,4)" :key="i" class="mini-tag">{{ t }}</span>
+                    </div>
+                    <router-link
+                      v-if="canRoute"
+                      :to="'/project/' + project.id"
+                      class="case-study-btn"
+                      @click.stop
+                    >
+                      View Case Study <i class="fa-solid fa-arrow-right"></i>
+                    </router-link>
+                    <a v-else :href="'/project/' + project.id" class="case-study-btn" @click.stop>
+                      View Case Study <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                  </div>
+                </div>
               </div>
-            </a>
-            <div v-else class="project-web-visual">
-              <i :class="project.icon"></i>
+            </div>
+
+            <h3 class="subsection-title other-sites-title">Other Sites</h3>
+            <div class="projects-web-grid">
+              <div class="project-web-item" v-for="(project, index) in otherSites" :key="'other-' + index">
+                <div class="image-wrapper">
+                  <a v-if="project.link" :href="project.link" target="_blank" rel="noopener">
+                    <div class="project-web-visual"><i :class="project.icon"></i></div>
+                  </a>
+                  <div v-else class="project-web-visual"><i :class="project.icon"></i></div>
+                </div>
+                <div class="project-web-caption">{{ project.caption }}</div>
+              </div>
             </div>
           </div>
-          <div class="project-web-caption">{{ project.caption }}</div>
-        </div>
-      </div>
-    </div>
 
-    <div v-else class="content-box techstack-box">
-      <h2 class="projects-web-title">TECH STACK</h2>
-      <div class="techstack-grid">
-        <div class="techstack-card" v-for="(cat, index) in techStackCategories" :key="'tech-' + index">
-          <div class="techstack-card-header">
-            <i :class="cat.icon"></i>
-            <h3>{{ cat.title }}</h3>
+          <div v-else key="tech" class="content-box">
+            <h3 class="subsection-title">Tech Stack</h3>
+            <div class="techstack-grid">
+              <div class="techstack-card" v-for="(cat, index) in techStackCategories" :key="'tech-' + index" @mousemove="handleCardTilt" @mouseleave="resetCardTilt">
+                <div class="skill-card-glow"></div>
+                <div class="techstack-card-header">
+                  <i :class="cat.icon"></i>
+                  <h3>{{ cat.title }}</h3>
+                </div>
+                <div class="techstack-tags">
+                  <span class="tag" v-for="(item, i) in cat.items" :key="'tech-item-' + index + '-' + i">{{ item }}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="techstack-tags">
-            <span class="tag" v-for="(item, i) in cat.items" :key="'tech-item-' + index + '-' + i">{{ item }}</span>
+        </transition>
+      </div>
+    </section>
+
+    <!-- ===== EDUCATION ===== -->
+    <section id="education-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <h2 class="section-title centered">Education</h2>
+        <div class="timeline">
+          <div class="timeline-card" v-for="(edu, index) in educationList" :key="'edu-' + index">
+            <div class="timeline-marker"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="timeline-content glass-panel">
+              <span class="timeline-period">{{ edu.period }}</span>
+              <h3>{{ edu.degree }}</h3>
+              <p class="timeline-meta">{{ edu.institution }}</p>
+              <p v-if="edu.note" class="timeline-note">{{ edu.note }}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </v-container>
+    </section>
 
-  <!-- ===================== EDUCATION ===================== -->
-  <v-container fluid id="education-container" class="white-section">
-    <div class="blob blob-education-1"></div>
-    <h2 class="section-title">EDUCATION</h2>
-    <div id="education-box" class="education-list" :class="{ 'grow': isScrolled, 'shrink': !isScrolled }">
-      <div class="education-card" v-for="(edu, index) in educationList" :key="'edu-' + index">
-        <i class="fa-solid fa-graduation-cap"></i>
-        <div>
-          <h3>{{ edu.degree }}</h3>
-          <p class="education-meta">{{ edu.institution }} &middot; {{ edu.period }}</p>
-          <p v-if="edu.note" class="education-note">{{ edu.note }}</p>
+    <!-- ===== EMPLOYMENT ===== -->
+    <section id="employment-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <h2 class="section-title centered">Employment History</h2>
+        <div class="employment-grid">
+          <div class="employment-card" v-for="(job, index) in employmentList" :key="'job-' + index">
+            <i :class="job.icon"></i>
+            <span>{{ job.title }}</span>
+          </div>
         </div>
       </div>
-    </div>
-  </v-container>
+    </section>
 
-  <!-- ===================== EMPLOYMENT HISTORY ===================== -->
-  <v-container fluid id="employment-container" class="white-section">
-    <div class="blob blob-employment-1"></div>
-    <h2 class="section-title">EMPLOYMENT HISTORY</h2>
-    <div id="employment-box" class="employment-grid" :class="{ 'grow': isScrolled, 'shrink': !isScrolled }">
-      <div class="employment-card" v-for="(job, index) in employmentList" :key="'job-' + index">
-        <i :class="job.icon"></i>
-        <span>{{ job.title }}</span>
-      </div>
-    </div>
-  </v-container>
-
-  <!-- ===================== CERTIFICATES ===================== -->
-  <v-container fluid id="certificates-container" class="white-section">
-    <div class="blob blob-certificates-1"></div>
-    <div class="blob blob-certificates-2"></div>
-    <h2 class="section-title">CERTIFICATES</h2>
-    <div id="certificates-box" class="certificates-grid" :class="{ 'grow': isScrolled, 'shrink': !isScrolled }">
-      <div class="certificate-card" v-for="(cert, index) in certificatesList" :key="'cert-' + index">
-        <i class="fa-solid fa-award"></i>
-        <div>
-          <h3>{{ cert.title }}</h3>
-          <p>{{ cert.org }}</p>
+    <!-- ===== STRENGTHS & WEAKNESSES ===== -->
+    <section id="strengths-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <h2 class="section-title centered">Strengths &amp; Weaknesses</h2>
+        <div class="sw-grid">
+          <div class="sw-card sw-strength">
+            <i class="fa-solid fa-bolt"></i>
+            <h3>Strength</h3>
+            <p>{{ strengthText }}</p>
+          </div>
+          <div class="sw-card sw-weakness">
+            <i class="fa-solid fa-hourglass-half"></i>
+            <h3>Weakness</h3>
+            <p>{{ weaknessText }}</p>
+          </div>
         </div>
       </div>
-    </div>
-  </v-container>
+    </section>
 
-  <!-- ===================== RESEARCH PAPERS ===================== -->
-  <v-container fluid id="research-container" class="white-section">
-    <div class="blob blob-research-1"></div>
-    <h2 class="section-title">RESEARCH PAPERS</h2>
-    <div id="research-box" class="research-grid" :class="{ 'grow': isScrolled, 'shrink': !isScrolled }">
-      <div class="research-card" v-for="(paper, index) in researchList" :key="'paper-' + index">
-        <i class="fa-solid fa-file-lines"></i>
-        <div>
-          <h3>{{ paper.title }}</h3>
-          <p>{{ paper.venue }}</p>
+    <!-- ===== CERTIFICATES ===== -->
+    <section id="certificates-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <h2 class="section-title centered">Certificates &amp; Achievements</h2>
+        <div class="certificates-grid">
+          <div class="certificate-card" v-for="(cert, index) in certificatesList" :key="'cert-' + index">
+            <i class="fa-solid fa-award"></i>
+            <div>
+              <h3>{{ cert.title }}</h3>
+              <p>{{ cert.org }}</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </v-container>
+    </section>
 
-  <!-- ===================== CONTACT ===================== -->
-  <v-container fluid id="contact-section" class="white-section">
-    <div class="blob blob-contact-1"></div>
-    <h2 class="section-title">CONTACT</h2>
-    <div id="contact-box" class="contact-grid" :class="{ 'grow': isScrolled, 'shrink': !isScrolled }">
-      <a class="contact-card" href="mailto:nizarahmed991ps@gmail.com">
-        <i class="fa-solid fa-envelope"></i>
-        <span>nizarahmed991ps@gmail.com</span>
-      </a>
-      <a class="contact-card" href="tel:+447466360651">
-        <i class="fa-solid fa-phone"></i>
-        <span>+44 7466 360651</span>
-      </a>
-      <a class="contact-card" href="https://www.linkedin.com/in/nizar-ahmed/" target="_blank">
-        <i class="fa-brands fa-linkedin"></i>
-        <span>linkedin.com/in/nizar-ahmed</span>
-      </a>
-      <a class="contact-card" href="https://github.com/Nizar991" target="_blank">
-        <i class="fa-brands fa-github"></i>
-        <span>github.com/Nizar991</span>
-      </a>
-      <!-- <div class="contact-card contact-card--static">
-        <i class="fa-solid fa-location-dot"></i>
-        <span>Willing to relocate &middot; Eligible for Full Time, switching to Graduate Visa soon</span>
-      </div> -->
-    </div>
-  </v-container>
+    <!-- ===== RESEARCH ===== -->
+    <section id="research-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <h2 class="section-title centered">Research Papers</h2>
+        <div class="research-grid">
+          <component
+            :is="paper.link ? 'a' : 'div'"
+            v-for="(paper, index) in researchList"
+            :key="'paper-' + index"
+            class="research-card"
+            :class="{ 'has-link': paper.link }"
+            :href="paper.link || null"
+            :target="paper.link ? '_blank' : null"
+            :rel="paper.link ? 'noopener' : null"
+          >
+            <i class="fa-solid fa-file-lines"></i>
+            <div class="research-body">
+              <h3>{{ paper.title }}</h3>
+              <p>{{ paper.venue }}</p>
+              <span class="paper-link-chip" :class="{ 'is-pending': !paper.link }">
+                <template v-if="paper.link">Read paper <i class="fa-solid fa-arrow-up-right-from-square"></i></template>
+                <template v-else>Link coming soon</template>
+              </span>
+            </div>
+          </component>
+        </div>
+      </div>
+    </section>
 
+    <!-- ===== CONTACT ===== -->
+    <section id="contact-section" class="reveal-section" data-reveal>
+      <div class="section-inner">
+        <h2 class="section-title centered">Let's Talk</h2>
+        <div class="contact-grid">
+          <a class="contact-card" href="mailto:nizarahmed991ps@gmail.com">
+            <i class="fa-solid fa-envelope"></i>
+            <span>nizarahmed991ps@gmail.com</span>
+          </a>
+          <a class="contact-card" href="tel:+447466360651">
+            <i class="fa-solid fa-phone"></i>
+            <span>+44 7466 360651</span>
+          </a>
+          <a class="contact-card" href="https://www.linkedin.com/in/nizar-ahmed/" target="_blank" rel="noopener">
+            <i class="fa-brands fa-linkedin"></i>
+            <span>linkedin.com/in/nizar-ahmed</span>
+          </a>
+          <a class="contact-card" href="https://github.com/Nizar991" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i>
+            <span>github.com/Nizar991</span>
+          </a>
+        </div>
+        <p class="footer-note">Designed &amp; built by Nizar Ahmed</p>
+      </div>
+    </section>
+
+  </div>
 </template>
 
 <script>
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/autoplay';
+import { projects, otherSites } from '../data/projects.js';
 
 export default {
   name: "TitleSection",
-  components: {
-    Swiper,
-    SwiperSlide,
-  },
   data() {
     return {
       isVisible: false,
-      isScrolled: false,
-      scrolledOnce: false,
+      heroLoaded: false,
+      activeSection: "top",
       selectedSection: "projects",
+      flippedCard: null,
+      projectCategory: projects[0].category,
+      canRoute: !!(this.$router),
+
+      titleText: "Full Stack Development | AI Engineering | Mobile App Development | Media Management",
+      personalStatement: "Full Stack Development and Machine Learning experiences using industrially used tools through implementation in self-taught projects. Passionate about Engineering. Developed applications maintaining standards alongside academic projects. Looking forward to corporate experiences. Strongly confident about task accomplishments. Carries a side interest in digital marketing and social media management.",
+      strengthText: "Stays positive under pressure and handles difficult situations with patience.",
+      weaknessText: "When deeply involved in a project, can lose track of time while working through the details more precisely.",
 
       navItems: [
-        { label: "Home", type: "scroll", target: "top" },
-        { label: "About", type: "scroll", target: "second-section-container" },
-        { label: "Skills", type: "scroll", target: "skills-container" },
-        { label: "Languages", type: "scroll", target: "proglang-container" },
-        { label: "Projects", type: "scroll", target: "projects-section" },
-        { label: "Education", type: "scroll", target: "education-container" },
-        { label: "Experience", type: "scroll", target: "employment-container" },
-        { label: "Certificates", type: "scroll", target: "certificates-container" },
-        { label: "Research", type: "scroll", target: "research-container" },
-        { label: "Contact", type: "scroll", target: "contact-section" },
+        { label: "Home", target: "top" },
+        { label: "About", target: "about-section" },
+        { label: "Skills", target: "skills-section" },
+        { label: "Languages", target: "languages-section" },
+        { label: "Projects", target: "projects-section" },
+        { label: "Education", target: "education-section" },
+        { label: "Experience", target: "employment-section" },
+        { label: "Certificates", target: "certificates-section" },
+        { label: "Research", target: "research-section" },
+        { label: "Contact", target: "contact-section" },
       ],
-
-      // For fade animations (hero section only)
-      fadedSections: [
-        {
-          id: "left-section",
-          fadeInClass: "fade-in-from-left",
-          fadeOutClass: "fade-out-left",
-        },
-        {
-          id: "right-section",
-          fadeInClass: "fade-in-from-top",
-          fadeOutClass: "fade-out-up",
-        },
-      ],
-      fadedState: {},
-
-      // For grow/shrink scroll-reveal animations
-      animatedSections: [
-        { id: "about-me-box", lowerThreshold: 0.1, growClass: "grow", shrinkClass: "shrink" },
-        { id: "skills-row", lowerThreshold: 0.1, growClass: "grow", shrinkClass: "shrink" },
-        { id: "proglang-box", lowerThreshold: 0.1, growClass: "grow", shrinkClass: "shrink" },
-        { id: "education-box", lowerThreshold: 0.1, growClass: "grow", shrinkClass: "shrink" },
-        { id: "employment-box", lowerThreshold: 0.1, growClass: "grow", shrinkClass: "shrink" },
-        { id: "certificates-box", lowerThreshold: 0.1, growClass: "grow", shrinkClass: "shrink" },
-        { id: "research-box", lowerThreshold: 0.1, growClass: "grow", shrinkClass: "shrink" },
-        { id: "contact-box", lowerThreshold: 0.1, growClass: "grow", shrinkClass: "shrink" },
-      ],
+      navRefs: [],
 
       progLanguages: ["Python", "Java", "PHP", "JavaScript", "SQL"],
 
-      webProjects: [
+      skillGroups: [
         {
-          caption: "Multi-Category Hate Detection (Transformer ML + Contextual Bandit) — Dissertation",
-          icon: "fa-solid fa-brain",
-          image: "/images/Project1.png",
+          title: "Automation & Integration",
+          icon: "fa-solid fa-gears",
+          items: [
+            "Workflow Automation with n8n",
+            "Machine Learning Models",
+            "API Integration Development",
+            "System Testing & Debugging",
+          ],
         },
         {
-          caption: "Library Robot — Semantic Search & ChatGPT API Integration — Thesis",
-          icon: "fa-solid fa-robot",
-          image: "/images/Project2.png",
+          title: "Data & Development",
+          icon: "fa-solid fa-database",
+          items: [
+            "SQL & Data Querying",
+            "Database Design, Migration & Optimization",
+            "Frontend & Backend Development with Error Handling",
+            "Data Pipelines & Processing",
+          ],
         },
         {
-          caption: "Laravel Neo4j Graph Relationship Management System",
-          icon: "fa-solid fa-sitemap",
-          image: "/images/Project3.png",
-        },
-        {
-          caption: "E2E Product Categorizer with Trained ML Model",
-          icon: "fa-solid fa-boxes-stacked",
-          image: "/images/Project4.png",
-        },
-        {
-          caption: "MERN Based CRUD Production Site for Staff Use",
-          icon: "fa-brands fa-node-js",
-          image: "/images/Project5.png",
-        },
-        {
-          caption: "PHP Based Full Stack Weather Application",
-          icon: "fa-solid fa-cloud-sun",
-          image: "/images/Project6.png",
-        },
-        {
-          caption: "Accessible Telemedicine Application (PHP)",
-          icon: "fa-solid fa-stethoscope",
-          image: "/images/Project7.png",
-        },
-        {
-          caption: "LC Management of Bank (Java)",
-          icon: "fa-brands fa-java",
-          image: "/images/Project8.png",
-        },
-        {
-          caption: "Fuzzy Decision & Topic Modelling for UK Used Car Price Prediction",
-          icon: "fa-solid fa-chart-line",
-          image: "/images/Project9.png",
+          title: "Marketing & CRM",
+          icon: "fa-solid fa-bullhorn",
+          items: [
+            "CRM Tools & Social Media Management",
+            "Digital Marketing & Content Strategy",
+            "Campaign Planning & Audience Engagement",
+          ],
         },
       ],
-      otherProjects: [
-        {
-          caption: "Google Site Development",
-          icon: "fa-brands fa-google",
-          image: "/images/Project10.png",
-          link: "",
-        },
-        {
-          caption: "Wix Site Development",
-          icon: "fa-solid fa-globe",
-          image: "/images/Project11.png",
-          link: "",
-        },
-        {
-          caption: "Shopify Store Development",
-          icon: "fa-brands fa-shopify",
-          image: "/images/Project12.png",
-          link: "",
-        },
-        {
-          caption: "WordPress Site Development",
-          icon: "fa-brands fa-wordpress-simple",
-          image: "/images/Project13.png",
-          link: "",
-        },
-      ],
+
+      projects,
+      otherSites,
 
       techStackCategories: [
         {
@@ -440,23 +437,18 @@ export default {
         {
           title: "AI/ML, DevOps & Dev Tools",
           icon: "fa-solid fa-microchip",
-          items: ["Docker", "Hugging Face", "TensorFlow", "Scikit-learn", "Linux", "Git", "GitHub", "Postman", "Render", "Netlify", "VS Code", "NumPy", "Thunkable", "Transformer Models", "Reinforcement Models"],
+          items: ["Prompt Engineering", "Docker", "Hugging Face", "TensorFlow", "Scikit-learn", "Linux", "Git", "GitHub", "Postman", "Render", "Netlify", "VS Code", "NumPy", "Thunkable", "Transformer Models", "Reinforcement Models"],
+        },
+        {
+          title: "Marketing, CRM & Social Media",
+          icon: "fa-solid fa-hashtag",
+          items: ["CRM Tools", "Social Media Management", "Digital Marketing", "Content Strategy", "Campaign Planning", "Audience Engagement"],
         },
       ],
 
       educationList: [
-        {
-          degree: "MSc in Applied Artificial Intelligence",
-          institution: "University of Huddersfield",
-          period: "2025 – 2026",
-          note: "",
-        },
-        {
-          degree: "BSc in Computer Science and Engineering",
-          institution: "Independent University, Bangladesh",
-          period: "2021 – 2024",
-          note: "Minor: General Management",
-        },
+        { degree: "MSc in Applied Artificial Intelligence", institution: "University of Huddersfield", period: "2025 – 2026", note: "" },
+        { degree: "BSc in Computer Science and Engineering", institution: "Independent University, Bangladesh", period: "2021 – 2024", note: "Minor: General Management" },
       ],
 
       employmentList: [
@@ -479,114 +471,265 @@ export default {
       ],
 
       researchList: [
-        { title: "Museum Guidance Robot", venue: "26th International Conference on Human Computer Interaction (HCII 2024)" },
-        { title: "Cultural Robotics", venue: "Second International Workshop on Cultural Robotics (CR 2025) at HRI '25" },
-        { title: "Interactive Library Robot", venue: "2025 ACM/IEEE International Conference on Human-Robot Interaction (HRI '25)" },
-        { title: "mHealth Service App", venue: "6th International Conference on Mobile Computing and Sustainable Informatics (ICMCSI 2025)" },
+        // Paste each paper's URL between the quotes in `link`. Leave "" until you have it.
+        { title: "Museum Guidance Robot", venue: "26th International Conference on Human Computer Interaction (HCII 2024)", link: "" },
+        { title: "Cultural Robotics", venue: "Second International Workshop on Cultural Robotics (CR 2025) at HRI '25", link: "" },
+        { title: "Interactive Library Robot", venue: "2025 ACM/IEEE International Conference on Human-Robot Interaction (HRI '25)", link: "" },
+        { title: "mHealth Service App", venue: "6th International Conference on Mobile Computing and Sustainable Informatics (ICMCSI 2025)", link: "" },
       ],
+
+      _particles: [],
+      _animFrame: null,
+      _observer: null,
+      _cursorPos: { x: 0, y: 0 },
+      _cursorCurrent: { x: 0, y: 0 },
     };
   },
 
+  computed: {
+    nameLetters() {
+      return "Nizar Ahmed".split("");
+    },
+    projectCategories() {
+      const seen = [];
+      this.projects.forEach((p) => {
+        if (!seen.includes(p.category)) seen.push(p.category);
+      });
+      return seen;
+    },
+    visibleProjects() {
+      return this.projects.filter((p) => p.category === this.projectCategory);
+    },
+  },
+
   methods: {
-    onSwiper(swiper) {
-      this.swiperInstance = swiper;
-    },
-    handleSlideClick(index) {
-      if (this.swiperInstance && this.swiperInstance.realIndex === index) {
-        if (this.webProjects[index].link) {
-          window.open(this.webProjects[index].link, '_blank');
-        }
-      } else if (this.swiperInstance) {
-        this.swiperInstance.slideToLoop(index, 300);
-      }
-    },
-    isActiveSlide(index) {
-      return this.swiperInstance && this.swiperInstance.realIndex === index;
+    setNavRef(el, index) {
+      if (el) this.navRefs[index] = el;
     },
 
     scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
 
-    loadFontAwesome() {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css';
-      document.head.appendChild(link);
-    },
-
-    toggleVisibility() {
-      this.isVisible = window.scrollY > 200;
-    },
-
-    openLink(url) {
-      window.open(url, "_blank");
+    scrollToId(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
     },
 
     handleNavClick(item) {
-      if (item.type === "scroll") {
-        if (item.target === "top") {
-          this.scrollToTop();
-        } else {
-          const element = document.getElementById(item.target);
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-          }
-        }
-      } else if (item.type === "route") {
-        this.$router.push(item.target);
+      if (item.target === "top") {
+        this.scrollToTop();
+      } else {
+        this.scrollToId(item.target);
       }
     },
 
-    handleScroll() {
-      this.animatedSections.forEach((section) => {
-        const element = document.getElementById(section.id);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
-          const threshold = viewportHeight * section.lowerThreshold;
-          const isVisible = rect.top < (viewportHeight - threshold);
+    projectsInCategory(cat) {
+      return this.projects.filter((p) => p.category === cat);
+    },
+    setProjectCategory(cat) {
+      this.projectCategory = cat;
+      this.flippedCard = null;
+    },
 
-          element.classList.toggle(section.growClass, isVisible);
-          element.classList.toggle(section.shrinkClass, !isVisible);
+    toggleFlip(id) {
+      this.flippedCard = this.flippedCard === id ? null : id;
+    },
+
+    loadFonts() {
+      const fa = document.createElement("link");
+      fa.rel = "stylesheet";
+      fa.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css";
+      document.head.appendChild(fa);
+
+      const gf = document.createElement("link");
+      gf.rel = "stylesheet";
+      gf.href = "https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap";
+      document.head.appendChild(gf);
+    },
+
+    toggleVisibility() {
+      this.isVisible = window.scrollY > 400;
+    },
+
+    // ---------- Cursor glow ----------
+    handleMouseMove(e) {
+      this._cursorPos.x = e.clientX;
+      this._cursorPos.y = e.clientY;
+    },
+    animateCursor() {
+      this._cursorCurrent.x += (this._cursorPos.x - this._cursorCurrent.x) * 0.12;
+      this._cursorCurrent.y += (this._cursorPos.y - this._cursorCurrent.y) * 0.12;
+      if (this.$refs.cursorGlow) {
+        this.$refs.cursorGlow.style.transform = `translate(${this._cursorCurrent.x}px, ${this._cursorCurrent.y}px)`;
+      }
+      requestAnimationFrame(this.animateCursor);
+    },
+
+    // ---------- 3D tilt ----------
+    handleCardTilt(e) {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const rotateY = ((x / rect.width) - 0.5) * 14;
+      const rotateX = ((y / rect.height) - 0.5) * -14;
+      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    },
+    resetCardTilt(e) {
+      e.currentTarget.style.transform = "";
+    },
+    handleProfileTilt(e) {
+      const wrap = e.currentTarget;
+      const rect = wrap.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const rotateY = ((x / rect.width) - 0.5) * 18;
+      const rotateX = ((y / rect.height) - 0.5) * -18;
+      wrap.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    },
+    resetProfileTilt(e) {
+      e.currentTarget.style.transform = "";
+    },
+
+    // ---------- Scroll-spy via IntersectionObserver ----------
+    setupObserver() {
+      const sections = document.querySelectorAll("[data-reveal]");
+      this._observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              this.activeSection = entry.target.id;
+              this.updateNavIndicator();
+            }
+          });
+        },
+        { threshold: 0.05 }
+      );
+      sections.forEach((s) => this._observer.observe(s));
+    },
+
+    updateNavIndicator() {
+      this.$nextTick(() => {
+        const idx = this.navItems.findIndex((n) => n.target === this.activeSection);
+        const el = this.navRefs[idx];
+        const indicator = this.$refs.navIndicator;
+        if (el && indicator) {
+          indicator.style.width = el.offsetWidth + "px";
+          indicator.style.transform = `translateX(${el.offsetLeft}px)`;
+          indicator.style.opacity = "1";
         }
       });
+    },
 
-      this.fadedSections.forEach((section) => {
-        const element = document.getElementById(section.id);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
-          const isVisible = rect.top < viewportHeight * 0.8 && rect.bottom > viewportHeight * 0.4;
+    // ---------- Constellation canvas ----------
+    setupCanvas() {
+      const canvas = this.$refs.constellationCanvas;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      let width, height;
 
-          if (!this.fadedState[section.id] && isVisible) {
-            element.classList.add(section.fadeInClass);
-            element.classList.remove(section.fadeOutClass);
-            this.fadedState[section.id] = true;
-          } else if (this.fadedState[section.id] && !isVisible) {
-            element.classList.add(section.fadeOutClass);
-            element.classList.remove(section.fadeInClass);
-            this.fadedState[section.id] = false;
+      const resize = () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = document.documentElement.scrollHeight;
+      };
+      resize();
+      window.addEventListener("resize", resize);
+      this._resizeHandler = resize;
+
+      const particleCount = Math.min(90, Math.floor((window.innerWidth * window.innerHeight) / 18000));
+      this._particles = Array.from({ length: particleCount }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        r: Math.random() * 1.6 + 0.6,
+      }));
+
+      const colors = ["139,92,246", "79,157,255", "209,107,255"];
+
+      const draw = () => {
+        ctx.clearRect(0, 0, width, height);
+        const scrollY = window.scrollY;
+        const viewTop = scrollY - 200;
+        const viewBottom = scrollY + window.innerHeight + 200;
+
+        for (const p of this._particles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+        }
+
+        for (let i = 0; i < this._particles.length; i++) {
+          const p = this._particles[i];
+          if (p.y < viewTop || p.y > viewBottom) continue;
+          for (let j = i + 1; j < this._particles.length; j++) {
+            const q = this._particles[j];
+            if (q.y < viewTop || q.y > viewBottom) continue;
+            const dx = p.x - q.x;
+            const dy = p.y - q.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 140) {
+              ctx.strokeStyle = `rgba(139,92,246,${0.12 * (1 - dist / 140)})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.stroke();
+            }
           }
         }
-      });
+
+        for (let i = 0; i < this._particles.length; i++) {
+          const p = this._particles[i];
+          if (p.y < viewTop || p.y > viewBottom) continue;
+          const c = colors[i % colors.length];
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${c},0.75)`;
+          ctx.fill();
+        }
+
+        this._animFrame = requestAnimationFrame(draw);
+      };
+      draw();
     },
   },
 
   mounted() {
-    window.addEventListener("scroll", this.handleScroll);
-    this.handleScroll();
+    this.loadFonts();
     window.addEventListener("scroll", this.toggleVisibility);
+    window.addEventListener("mousemove", this.handleMouseMove);
+    requestAnimationFrame(this.animateCursor);
 
-    this.loadFontAwesome();
+    this.setupCanvas();
+    this.setupObserver();
+
+    setTimeout(() => {
+      this.heroLoaded = true;
+      this.$nextTick(() => this.updateNavIndicator());
+    }, 150);
+
+    window.addEventListener("resize", this.updateNavIndicator);
   },
 
   beforeUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
     window.removeEventListener("scroll", this.toggleVisibility);
+    window.removeEventListener("mousemove", this.handleMouseMove);
+    window.removeEventListener("resize", this.updateNavIndicator);
+    if (this._resizeHandler) window.removeEventListener("resize", this._resizeHandler);
+    if (this._animFrame) cancelAnimationFrame(this._animFrame);
+    if (this._observer) this._observer.disconnect();
   },
 };
 </script>
+
+<style>
+/* Unscoped on purpose: :root custom properties must not be attribute-scoped */
+@import "../styles/theme-tokens.css";
+</style>
 
 <style scoped>
 @import "../styles/AboutMe.css";
