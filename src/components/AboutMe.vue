@@ -472,10 +472,10 @@ export default {
 
       researchList: [
         // Paste each paper's URL between the quotes in `link`. Leave "" until you have it.
-        { title: "Museum Guidance Robot", venue: "26th International Conference on Human Computer Interaction (HCII 2024)", link: "" },
-        { title: "Cultural Robotics", venue: "Second International Workshop on Cultural Robotics (CR 2025) at HRI '25", link: "" },
-        { title: "Interactive Library Robot", venue: "2025 ACM/IEEE International Conference on Human-Robot Interaction (HRI '25)", link: "" },
-        { title: "mHealth Service App", venue: "6th International Conference on Mobile Computing and Sustainable Informatics (ICMCSI 2025)", link: "" },
+        { title: "Museum Guidance Robot", venue: "26th International Conference on Human Computer Interaction (HCII 2024)", link: "https://link.springer.com/chapter/10.1007/978-3-031-76815-6_26" },
+        { title: "Cultural Robotics", venue: "Second International Workshop on Cultural Robotics (CR 2025) at HRI '25", link: "https://link.springer.com/book/10.1007/978-3-032-15501-6" },
+        { title: "Interactive Library Robot", venue: "2025 ACM/IEEE International Conference on Human-Robot Interaction (HRI '25)", link: "https://dl.acm.org/doi/10.5555/3721488.3721732" },
+        { title: "mHealth Service App", venue: "6th International Conference on Mobile Computing and Sustainable Informatics (ICMCSI 2025)", link: "https://ieeexplore.ieee.org/document/10883365" },
       ],
 
       _particles: [],
