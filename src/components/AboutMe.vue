@@ -39,7 +39,16 @@
       <div class="hero-content">
         <div class="hero-left">
           <h1 id="hero-name" :class="{ 'reveal-in': heroLoaded }">
-            <span v-for="(letter, i) in nameLetters" :key="i" class="letter" :style="{ transitionDelay: (i * 0.045) + 's' }">{{ letter === ' ' ? '\u00A0' : letter }}</span>
+            <template v-for="(word, w) in nameWords" :key="w">
+              <span class="word">
+                <span
+                  v-for="(letter, i) in word.letters"
+                  :key="i"
+                  class="letter"
+                  :style="{ transitionDelay: ((word.offset + i) * 0.045) + 's' }"
+                >{{ letter }}</span>
+              </span>{{ ' ' }}
+            </template>
           </h1>
           <p id="hero-title" :class="{ 'reveal-in': heroLoaded }">{{ titleText }}</p>
           <p class="hero-blurb" :class="{ 'reveal-in': heroLoaded }">
@@ -487,8 +496,13 @@ export default {
   },
 
   computed: {
-    nameLetters() {
-      return "Nizar Ahmed".split("");
+    nameWords() {
+      let offset = 0;
+      return "Nizar Ahmed".split(" ").map((w) => {
+        const obj = { letters: w.split(""), offset };
+        offset += w.length + 1;
+        return obj;
+      });
     },
     projectCategories() {
       const seen = [];
