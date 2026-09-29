@@ -198,7 +198,7 @@ export const projects = [
       "Accessibility-focused interface decisions",
     ],
     stack: ["PHP", "MySQL", "HTML/CSS", "JavaScript"],
-    link: "",
+    link: "https://github.com/Nizar991/Telimedicine",
   },
   {
     id: "staff-platform",
@@ -231,7 +231,7 @@ export const projects = [
       "Report update/refresh workflow",
     ],
     stack: ["PHP", "MySQL", "HTML/CSS", "JavaScript"],
-    link: "",
+    link: "https://github.com/Nizar991/Web_Application_to_help_people_track_and_report_climate_change_impacts",
   },
   {
     id: "proshop",
