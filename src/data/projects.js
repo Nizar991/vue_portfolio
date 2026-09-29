@@ -22,7 +22,7 @@ export const projects = [
       "End-to-end pipeline from raw text to categorised output",
     ],
     stack: ["Python", "Transformer Models", "Hugging Face", "Scikit-learn", "NumPy"],
-    link: "",
+    link: "https://github.com/Nizar991/Multi-Category-Hate-Speech-Detection",
   },
   {
     id: "library-robot",
@@ -40,7 +40,7 @@ export const projects = [
       "Published across HCII 2024, CR 2025, and HRI '25",
     ],
     stack: ["Python", "OpenAI APIs", "Semantic Search", "Robotics", "REST APIs"],
-    link: "",
+    link: "https://github.com/Nizar991/Library-Robot-Web-Interface",
   },
   {
     id: "hate-intensity",
@@ -57,7 +57,7 @@ export const projects = [
       "Designed to complement binary hate-detection classifiers",
     ],
     stack: ["Python", "LDA", "Fuzzy Logic", "NumPy"],
-    link: "",
+    link: "https://github.com/Nizar991/hate-speech-recognizer",
   },
   {
     id: "car-price",
@@ -147,7 +147,7 @@ export const projects = [
       "Structured data handling for financial-document processes",
     ],
     stack: ["Java", "OOP", "System Design"],
-    link: "",
+    link: "https://github.com/Nizar991/oop-letter-of-credit-management-of-a-bank",
   },
   {
     id: "graph-relationship",
@@ -182,7 +182,7 @@ export const projects = [
       "Hand-built glassmorphic dark design system",
     ],
     stack: ["Vue.js", "JavaScript", "CSS", "Vue Router"],
-    link: "",
+    link: "https://github.com/Nizar991/vue_portfolio",
   },
   {
     id: "telemedicine",
@@ -215,7 +215,7 @@ export const projects = [
       "Built for real production/staff use, not just demonstration",
     ],
     stack: ["MongoDB", "Express", "React", "Node.js"],
-    link: "",
+    link: "https://github.com/Nizar991/social_up_internal",
   },
   {
     id: "weather-app",
