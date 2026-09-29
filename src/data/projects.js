@@ -90,7 +90,7 @@ export const projects = [
       "Trained classification model for automatic categorisation",
     ],
     stack: ["Python", "Machine Learning", "Data Pipelines"],
-    link: "",
+    link: "https://github.com/Nizar991/product-categorizer",
   },
 
   {
