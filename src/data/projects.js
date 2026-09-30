@@ -74,7 +74,7 @@ export const projects = [
       "Real-world, noisy market data as the training source",
     ],
     stack: ["Python", "Scikit-learn", "Pandas/NumPy", "Data Analysis"],
-    link: "",
+    link: "https://github.com/Nizar991/UK-Used-Car-Price-Prediction",
   },
   {
     id: "product-categorizer",
