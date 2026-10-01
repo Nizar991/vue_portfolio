@@ -51,9 +51,9 @@
             </template>
           </h1>
           <p id="hero-title" :class="{ 'reveal-in': heroLoaded }">{{ titleText }}</p>
-          <p class="hero-blurb" :class="{ 'reveal-in': heroLoaded }">
+          <!-- <p class="hero-blurb" :class="{ 'reveal-in': heroLoaded }">
             {{ personalStatement }}
-          </p>
+          </p> -->
 
 
           <div id="social-icons" :class="{ 'reveal-in': heroLoaded }">
